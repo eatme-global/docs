@@ -1,32 +1,66 @@
-# Mintlify Starter Kit
+# DineTap Documentation
 
-Click on `Use this template` to copy the Mintlify starter kit. The starter kit contains examples including
+Welcome to the official documentation for DineTap - your comprehensive restaurant management solution. This documentation is built using [Mintlify](https://mintlify.com/), providing a modern and interactive documentation experience.
 
-- Guide pages
-- Navigation
-- Customizations
-- API Reference pages
-- Use of popular components
+## 🚀 Overview
 
-### Development
+This repository contains the documentation for DineTap's suite of products:
+- Point of Sale (POS) System
+- Back Office Management
+- Payment Processing
+- Internal Development Resources
+- API Documentation
 
-Install the [Mintlify CLI](https://www.npmjs.com/package/mintlify) to preview the documentation changes locally. To install, use the following command
+## 📚 Documentation Structure
 
 ```
+docs/
+├── api-docs/      # API documentation and endpoints
+├── backoffice/    # Back office management documentation
+├── home/          # Getting started and general guides
+├── internal/      # Internal development and company resources
+├── payments/      # Payment processing documentation
+├── pos/          # Point of Sale system documentation
+└── snippets/     # Code snippets and examples
+```
+
+## 🛠 Local Development
+
+1. Install the Mintlify CLI:
+```bash
 npm i -g mintlify
 ```
 
-Run the following command at the root of your documentation (where mint.json is)
-
-```
+2. Start the development server:
+```bash
 mintlify dev
 ```
 
-### Publishing Changes
+3. Visit http://localhost:3000 to preview the documentation
 
-Install our Github App to auto propagate changes from your repo to your deployment. Changes will be deployed to production automatically after pushing to the default branch. Find the link to install on your dashboard. 
+## 📝 Contributing
 
-#### Troubleshooting
+1. Fork this repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-- Mintlify dev isn't running - Run `mintlify install` it'll re-install dependencies.
-- Page loads as a 404 - Make sure you are running in a folder with `mint.json`
+## 🎨 Customization
+
+The documentation site can be customized through the `docs.json` file, including:
+- Theme colors
+- Navigation structure
+- Logo and branding
+- Authentication settings
+
+## 🔗 Links
+
+- [DineTap Website](https://dinetap.com)
+- [Support Email](mailto:support@dinetap.com)
+- Support Phone: 1-800-DINETAP
+
+## 📄 License
+
+This documentation is proprietary and confidential. © DineTap
+
