@@ -1,0 +1,109 @@
+---
+title: 'API Endpoint Design'
+description: 'Comparing CRUD vs Action-Specific API endpoint design approaches'
+---
+
+## Introduction
+
+When designing APIs, one of the key architectural decisions is choosing between generic CRUD (Create, Read, Update, Delete) endpoints and action-specific endpoints. This document explores both approaches, their use cases, and provides guidance on when to use each.
+
+## Generic CRUD Endpoints
+
+### Overview
+
+CRUD endpoints follow REST principles and provide standard operations for resource manipulation. They typically use standard HTTP methods (GET, POST, PUT, PATCH, DELETE) with resource-focused URLs.
+
+### Standard Pattern
+
+```plain
+GET    /api/resources          # List resources
+POST   /api/resources          # Create new resource
+GET    /api/resources/{id}     # Get specific resource
+PUT    /api/resources/{id}     # Update entire resource
+PATCH  /api/resources/{id}     # Partial update
+DELETE /api/resources/{id}     # Delete resource
+```
+
+### Advantages
+
+- Follows REST conventions
+- Simpler API surface with fewer endpoints
+- Better code reusability
+- Consistent patterns across resources
+- Easier to document using standard tools
+- Flexible for handling multiple update scenarios
+
+### Disadvantages
+
+- Less explicit about business operations
+- Complex validation logic in single endpoints
+- Harder to implement specific authorization rules
+- May expose more functionality than needed
+- Business intent can be less clear
+
+## Action-Specific Endpoints
+
+### Overview
+
+Action-specific endpoints are designed around business operations rather than data operations. They explicitly name the action being performed.
+
+### Standard Pattern
+
+```plain
+POST /api/resources/{id}/activate
+POST /api/resources/{id}/deactivate
+POST /api/resources/{id}/archive
+POST /api/resources/{id}/publish
+```
+
+### Advantages
+
+- Clear business intent
+- Precise authorization controls
+- Simpler validation rules
+- Better audit logging
+- Can optimize for specific use cases
+- Easier to implement complex business logic
+
+### Disadvantages
+
+- More endpoints to maintain
+- Potential endpoint proliferation
+- Less adherence to REST principles
+- May lead to duplicate code if not carefully designed
+
+## When to Use Each Approach
+
+### Use Generic CRUD When
+
+- Operation is a simple data update
+- No complex business logic involved
+- Standard authorization patterns apply
+- Operation doesn't trigger significant side effects
+- Resource state is simple
+
+### Use Action-Specific When
+
+- Operation represents a specific business process
+- Complex validation or business rules exist
+- Precise authorization control is needed
+- Operation triggers important side effects
+- Clear audit trail is required
+- State transitions need to be explicitly tracked
+
+<Note>
+  Choose the approach that best aligns with your business domain and team structure. Many successful APIs use a combination of both approaches.
+</Note>
+
+## Real-World Example: Payment Processing System
+
+A payment system that handles state transitions, such as marking payments as pending, completed, or failed, would benefit from action-specific endpoints:
+
+```plain
+POST /api/payments/{id}/authorize
+POST /api/payments/{id}/capture
+POST /api/payments/{id}/refund
+POST /api/payments/{id}/void
+```
+
+This makes the business operations explicit and allows for targeted validation and authorization rules.

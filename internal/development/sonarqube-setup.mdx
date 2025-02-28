@@ -1,0 +1,62 @@
+---
+title: 'SonarQube Access Guide'
+description: 'How to access and authenticate with the EatMe Global SonarQube instance'
+---
+
+## Getting Started
+
+SonarQube is our code quality and security analysis platform. This guide explains how to access and authenticate with our SonarQube instance.
+
+## Access Methods
+
+- Access SonarQube at: [https://sonar.eatmeglobal.org](https://sonar.eatmeglobal.org/)
+- Two authentication methods are available:
+  1. GitHub SSO (recommended)
+  2. Email and Password
+
+## Authentication Options
+
+### 1. GitHub SSO
+
+- **Eligibility**: Only for employees with EatMe GitHub Organization membership
+- **Login Steps**:
+  1. Navigate to [https://sonar.eatmeglobal.org](https://sonar.eatmeglobal.org/)
+  2. Click "Login with GitHub"
+  3. Authorize the application if prompted
+  4. Set up your SonarQube profile on first login
+
+<Note>
+  GitHub SSO is the preferred authentication method as it simplifies access management and ensures account deactivation when employees leave the organization.
+</Note>
+
+### 2. Email and Password
+
+- **Eligibility**: For team members without EatMe GitHub Organization access
+- **Account Creation Process**:
+  1. Employee requests credentials from their Team Lead
+  2. Team Lead submits request to SonarQube administrators
+  3. Administrators create account and provide credentials
+  4. Credentials are securely shared with the employee
+
+## Project Access
+
+After logging in, you'll have access to projects based on your team membership and role. If you need access to additional projects, please contact your team lead or SonarQube administrator.
+
+## Integration with CI/CD
+
+SonarQube is integrated with our CI/CD pipelines. When you push code or create a pull request, code analysis is automatically performed and results are available in SonarQube and as comments in your PR.
+
+## Best Practices
+
+1. **Review SonarQube results regularly**: Make it a habit to check SonarQube analysis results for your projects
+2. **Address code smells early**: Fix code quality issues as they're identified rather than letting them accumulate
+3. **Use SonarLint in your IDE**: Install SonarLint plugin for real-time feedback as you code
+4. **Include SonarQube links in PR descriptions**: Reference relevant SonarQube analyses in your pull requests
+
+<Warning>
+  Never share your SonarQube credentials with others. Each team member should use their own account for traceability and security reasons.
+</Warning>
+
+## Getting Help
+
+If you encounter issues with SonarQube access or have questions about the analysis results, contact the DevOps team via Slack in the #devops-support channel.

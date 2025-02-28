@@ -1,0 +1,356 @@
+---
+title: 'Cypress End-to-End Testing Setup'
+description: 'A comprehensive guide for setting up Cypress E2E testing in Node.js Express projects'
+---
+
+## Prerequisites
+
+Before setting up end-to-end testing for your Node.js Express project, ensure you have the following tools and configurations in place:
+
+### 1. Testing Framework Setup
+
+- Install Cypress by following the official [Cypress Installation Guide](https://docs.cypress.io/app/get-started/install-cypress)
+- Install the VSCode Extension "Coverage Gutters" for monitoring test coverage in your editor
+- Configure SonarQube according to your company's documentation for code quality analysis and CI/CD integration
+
+### 2. Test Database Setup
+
+You have two options for setting up a test database:
+
+1. Use Docker (recommended for consistent environments)
+2. Use an existing local database server
+
+#### Option 1: Docker Database Setup
+
+<Tabs>
+  <Tab title="MySQL">
+  ```yaml
+  # docker-compose.yml
+  services:
+    test-db:
+      image: mysql:8.0
+      environment:
+        MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+        MYSQL_DATABASE: ${DB_NAME}
+      ports:
+        - ${DB_PORT}:3306
+      command: --default-authentication-plugin=mysql_native_password
+      healthcheck:
+        test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+        timeout: 20s
+        retries: 10
+      volumes:
+        - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  ```
+  </Tab>
+  <Tab title="MongoDB">
+  ```yaml
+  # docker-compose.yml
+  services:
+    mongodb:
+      image: mongo:latest
+      command: mongod --replSet rs0 --bind_ip_all
+      environment:
+        MONGO_INITDB_DATABASE: ${DB_NAME}
+      ports:
+        - ${DB_PORT}:27017
+      healthcheck:
+        test: mongosh --eval "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'127.0.0.1:27017'}]}) }"
+        interval: 10s
+        timeout: 10s
+        retries: 5
+        start_period: 40s
+  ```
+  </Tab>
+</Tabs>
+
+### 3. Environment Configuration
+
+Create a `.env.test` file in your project root. This file will store all test-specific environment variables.
+
+<Tabs>
+  <Tab title="MySQL">
+  ```plain
+  PORT=3000
+  ENV="test"
+  PACKAGE_NAME="my-api"
+  
+  DB_USERNAME="root"
+  DB_PASSWORD="root"
+  DB_HOST="127.0.0.1"
+  DB_PORT=3300
+  DB_NAME="test-db"
+  ```
+  </Tab>
+  <Tab title="MongoDB">
+  ```plain
+  PORT=3000
+  ENV="test"
+  PACKAGE_NAME="my-api"
+  
+  DB_NAME=test-db
+  DB_PORT=27017
+  MONGODB_URI=mongodb://127.0.0.1:27017/test-db?replicaSet=rs0
+  ```
+  </Tab>
+</Tabs>
+
+## Database and Server Management
+
+### Starting and Stopping the Test Database
+
+To start the test database:
+
+```bash
+env-cmd -f .env.test docker-compose up -d
+```
+
+To stop the test database:
+
+```bash
+env-cmd -f .env.test docker-compose down
+```
+
+### Server Configuration for E2E Tests
+
+Once the database is running, we need to start the server for e2e tests to send requests and receive responses:
+
+```bash
+TZ=UTC env-cmd -f .env.test nyc --silent ts-node ./src/server.ts
+```
+
+This command:
+- Sets the timezone to UTC for consistent testing
+- Uses NYC for code instrumentation to track coverage
+- Runs the server using ts-node instead of node/nodemon
+
+<Note>
+  It's important to use the same environment across all your tests. Using UTC timezone helps prevent time-related test failures.
+</Note>
+
+## Code Coverage Setup with NYC
+
+### Why NYC?
+
+NYC (Istanbul) is used to instrument our code for coverage tracking. This instrumentation is crucial for understanding which parts of our code are being tested.
+
+### Installation
+
+```bash
+yarn add -D nyc
+```
+
+### Configuration
+
+Create `.nycrc` in the project root:
+
+```json
+{
+  "all": true,
+  "include": ["src/**/*.ts"],
+  "exclude": [
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/*.cy.ts",
+    "**/*.d.ts",
+    "coverage/**",
+    "dist/**",
+    "cypress/**",
+    "__tests__/**"
+  ],
+  "extension": [".ts"],
+  "reporter": ["json", "lcov", "text", "html"],
+  "sourceMap": true,
+  "instrument": true,
+  "report-dir": "coverage/cypress",
+  "temp-dir": ".nyc_output",
+  "cache": false,
+  "check-coverage": false,
+  "debug": true,
+  "verbose": true
+}
+```
+
+### Additional Dependencies
+
+Install ts-node for TypeScript execution and coverage-related packages:
+
+```bash
+yarn add -D ts-node
+yarn add -D cypress-sonarqube-reporter @cypress/code-coverage
+```
+
+## Cypress Configuration
+
+### Configuration File Setup
+
+The `cypress.config.ts` file configures Cypress behavior and integrates with our testing environment:
+
+```typescript
+import { defineConfig } from 'cypress';
+import path from 'path';
+import environment from './src/config/env.config';
+
+export default defineConfig({
+  reporter: 'cypress-sonarqube-reporter',
+  reporterOptions: {
+    outputDir: './test-results',
+    outputFile: 'cypress-results.xml',
+    overwrite: true,
+    format: 'sonarqube',
+  },
+  e2e: {
+    setupNodeEvents(on, config) {
+      require(path.resolve(__dirname, 'cypress/plugins/index.ts'))(on, config);
+      require('@cypress/code-coverage/task')(on, config);
+      return config;
+    },
+    baseUrl: `http://localhost:${environment.port}/api`,
+    env: {
+      packageName: environment.packageName,
+      packageVersion: environment.packageVersion,
+      env: environment.env,
+      apiKey: environment.apiKey,
+      dbURI: environment.dbURI,
+      codeCoverage: {
+        url: `http://localhost:${environment.port}/__coverage__`,
+        expectBackendCoverageOnly: true,
+      },
+    },
+    defaultCommandTimeout: 5000,
+  },
+  screenshotOnRunFailure: false,
+  video: false,
+});
+```
+
+## Writing E2E Tests
+
+### Test Structure
+
+Organize your tests by API endpoints or features. Here's an example structure for a user API:
+
+```
+cypress/
+  e2e/
+    user/
+      get-users.cy.ts
+      create-user.cy.ts
+      update-user.cy.ts
+      delete-user.cy.ts
+```
+
+### Example Test File
+
+Here's an example of a test for creating a user:
+
+```typescript
+// cypress/e2e/user/create-user.cy.ts
+describe('POST /v1/users', () => {
+  const { apiKey, dbURI } = Cypress.env();
+  
+  beforeEach(() => {
+    cy.task('cleanupUsers', { dbURI });
+  });
+  
+  it('should create a new user successfully', () => {
+    const payload = {
+      name: 'Test User',
+      email: 'test@example.com',
+      role: 'user'
+    };
+    
+    cy.request({
+      method: 'POST',
+      url: '/v1/users',
+      headers: {
+        'x-api-key': apiKey,
+        'Content-Type': 'application/json'
+      },
+      body: payload
+    }).then((response) => {
+      expect(response.status).to.eq(201);
+      expect(response.body).to.have.property('id');
+      expect(response.body.name).to.eq(payload.name);
+      expect(response.body.email).to.eq(payload.email);
+    });
+  });
+});
+```
+
+## Running Tests
+
+### Running All Tests
+
+To run all Cypress tests:
+
+```bash
+yarn cypress:run
+```
+
+### Running Specific Tests
+
+To run specific tests:
+
+```bash
+yarn cypress:run --spec "cypress/e2e/user/**/*.cy.ts"
+```
+
+## CI/CD Integration
+
+### GitHub Actions Example
+
+```yaml
+name: E2E Tests
+
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+    branches: [main, development]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        run: yarn install
+        
+      - name: Start test database
+        run: env-cmd -f .env.test docker-compose up -d
+        
+      - name: Wait for database to be ready
+        run: sleep 15
+        
+      - name: Run E2E tests
+        run: |
+          yarn start:test &
+          sleep 5
+          yarn cypress:run
+          
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage/
+```
+
+## Best Practices
+
+1. **Use database cleanup hooks**: Clean up test data before and after tests to ensure isolation
+2. **Mock external services**: Use Cypress interceptors for external API calls
+3. **Keep tests atomic**: Each test should be independent and not rely on the state from other tests
+4. **Use meaningful assertions**: Test the right things with clear, descriptive assertions
+5. **Organize by feature**: Group tests by feature or endpoint for better organization
+
+<Note>
+  Remember, effective E2E tests focus on critical user journeys rather than trying to test every possible scenario. Use unit tests for detailed logic testing and E2E tests for validating complete workflows.
+</Note>

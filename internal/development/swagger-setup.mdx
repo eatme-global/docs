@@ -1,0 +1,143 @@
+---
+title: 'Swagger Documentation Setup'
+description: 'Learn how to integrate and configure Swagger for API documentation in your project'
+---
+
+## Overview
+
+This guide walks you through the process of setting up Swagger documentation for your APIs, including authentication configuration and API specifications. Swagger provides a standardized way to document your APIs and makes it easier for developers to understand and test your endpoints.
+
+## Prerequisites
+
+Before you begin, ensure you have:
+- Node.js and yarn installed
+- Access to your project's environment variables
+- Necessary permissions to modify project configuration
+
+## Step-by-Step Configuration
+
+### 1. Create Swagger Specification File
+
+Create a `swagger.json` file in your project's root directory. This file will define your OpenAPI specifications and security schemes.
+
+```json
+{
+  "openapi": "3.0.3",
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    }
+  }
+}
+```
+
+### 2. Install Dependencies
+
+Add the required packages to your project:
+
+```bash
+# Main dependencies
+yarn add swagger-jsdoc swagger-ui-express express-basic-auth
+
+# TypeScript type definitions
+yarn add --dev @types/swagger-jsdoc @types/swagger-ui-express
+```
+
+### 3. Environment Configuration
+
+Set up the following environment variables in your `.env` file:
+
+```env
+SWAGGER_AUTH_USERNAME="eatme-application"
+SWAGGER_AUTH_PASSWORD="your-secure-password"
+```
+
+<Note>
+  Store these credentials securely in AWS Secret Manager or ECS for production environments.
+</Note>
+
+### 4. Application Setup
+
+#### Import Required Dependencies
+
+```typescript
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+import basicAuth from 'express-basic-auth';
+```
+
+#### Configure Swagger Specifications
+
+```typescript
+const options = {
+  swaggerDefinition: require('../../swagger.json'),
+  apis: ['./**/*.routes.{ts,js}'],
+  definition: {
+    info: {
+      title: environment.packageName,
+      version: environment.packageVersion,
+    },
+  },
+};
+
+const swaggerSpec = swaggerJSDoc(options);
+```
+
+#### Set Up Authentication
+
+```typescript
+const swaggerAuth = basicAuth({
+  users: { [environment.swaggerAuthUsername]: environment.swaggerAuthPassword },
+  challenge: true,
+  realm: 'Imb4T3st4pp',
+});
+```
+
+### 5. Middleware Integration
+
+Add the Swagger middleware to your application:
+
+```typescript
+if (environment.env !== ENVIRONMENTS.PROD) {
+  app.use(
+    '/api-docs',
+    swaggerAuth,
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec),
+  );
+}
+```
+
+<Warning>
+  Swagger documentation should not be accessible in production environments for security reasons.
+</Warning>
+
+## Verification
+
+After completing the setup, verify your Swagger documentation by:
+
+1. Starting your development server
+2. Navigating to `/api-docs/#/` on your host URL
+3. Logging in with your configured credentials
+
+Example URL: `https://qabackofficeapi.eatmeglobal.org/api-docs/#/`
+
+## Next Steps
+
+- Add endpoint definitions in your route files
+- Document API parameters and responses
+- Set up authentication schemes for your endpoints
+- Add example requests and responses
+
+<Note>
+  Remember to keep your API documentation up to date as you make changes to your endpoints.
+</Note> 

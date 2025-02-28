@@ -1,0 +1,176 @@
+---
+title: 'AWS Resource Naming Convention'
+description: 'Standardized naming conventions for AWS resources at EatMe Global'
+---
+
+## Introduction
+
+This document outlines the standardized naming conventions for AWS resources at EatMe Global. Following these conventions ensures consistency, improved resource management, and better operational efficiency across our cloud infrastructure.
+
+## General Convention
+
+The common pattern for most resources follows this structure:
+
+```plain
+{group}-{env}-[{availability_zone}]-[{scope}]-{resource_name}
+```
+
+### Base Pattern Components
+
+- Required fields are marked with `{}`
+- Optional fields are marked with `[{}]`
+- All lowercase letters
+- Hyphens (-) as separators for most resources
+- Forward slashes (/) as separators for certain services (ECR, Secrets Manager)
+
+## Variable Definitions
+
+### Group
+
+- Fixed value: `eatme-global`
+- Represents our organization identifier
+
+### Environment (`env`)
+
+- `dev` - Development
+- `qa` - Quality Assurance
+- `stg` - Staging
+- `prod` - Production
+
+### Region (`region`)
+
+Supported regions:
+
+- `us-east-1` - North Virginia
+- `ap-southeast-1` - Singapore
+- `ap-southeast-2` - Sydney
+
+### Availability Zone (`availability_zone`)
+
+Examples:
+
+- `us-east-1a`
+- `ap-southeast-1b`
+- `ap-southeast-2a`
+
+### Route Code (`route_code`)
+
+- `public` - Internet-facing resources
+- `private` - Internal resources
+
+### Database Type (`db_type`)
+
+- `mysql` - MySQL databases
+- `postgres` - PostgreSQL databases
+
+### Scope
+
+Optional identifier for specific applications or services (e.g., `orders-api`, `payment-service`)
+
+## Resource-Specific Patterns
+
+### Compute Services
+
+#### EC2 Instances
+
+```plain
+Pattern: {group}-{env}-[{scope}]-ec2
+Example: eatme-global-prod-orders-api-ec2
+```
+
+#### EC2 Other Resources (Volume, Snapshot, etc.)
+
+```plain
+Pattern: {group}-{env}-[{scope}]-{resource-type}
+Example: eatme-global-prod-orders-api-vol
+```
+
+#### Lambda Functions
+
+```plain
+Pattern: {group}-{env}-[{scope}]-func
+Example: eatme-global-prod-order-processor-func
+```
+
+### Container Services
+
+#### Elastic Container Service (ECS)
+
+```plain
+Pattern: {group}-{env}-[{scope}]-ecs
+Example: eatme-global-prod-api-ecs
+```
+
+#### ECS Service
+
+```plain
+Pattern: {group}-{env}-[{scope}]-svc
+Example: eatme-global-prod-orders-svc
+```
+
+#### EC2 Container Registry (ECR)
+
+```plain
+Pattern: {group}/{env}/[{scope}]
+Example: eatme-global/prod/orders-api
+```
+
+#### Elastic Kubernetes Service (EKS)
+
+```plain
+Pattern: {group}-{env}-[{scope}]-eks
+Example: eatme-global-prod-eks
+```
+
+### Database Services
+
+#### Relational Database Service (RDS)
+
+```plain
+Pattern: {group}-{env}-[{availability_zone}]-{db_type}-[{scope}]-rds
+Example: eatme-global-prod-ap-southeast-1a-postgres-orders-rds
+```
+
+#### DynamoDB
+
+```plain
+Pattern: {group}-{env}-{region}-[{scope}]-ddb
+Example: eatme-global-prod-ap-southeast-1-orders-ddb
+```
+
+#### ElastiCache
+
+```plain
+Pattern: {group}-{env}-[{scope}]-cache
+Example: eatme-global-prod-session-cache
+```
+
+<Note>
+  Consistency in naming conventions is crucial for resource management, automation, and cost allocation. Always follow these patterns when creating new AWS resources.
+</Note>
+
+## Best Practices
+
+1. **Consistency**: Always follow the defined patterns
+2. **Descriptiveness**: Choose resource names that clearly indicate purpose
+3. **Case Sensitivity**: Use lowercase for all resource names
+4. **Length Limits**: Keep names concise while maintaining clarity
+5. **Scope Usage**: Include scope for application-specific resources
+6. **Tags**: Complement naming conventions with appropriate AWS tags
+
+## Mandatory Tags
+
+All resources should include the following tags where supported:
+
+- `Project`: The project or initiative
+- `Environment`: The deployment environment
+- `Owner`: Team or individual responsible
+- `Cost-Center`: Financial allocation unit
+
+## Change Management
+
+Updates to these naming conventions require approval from the Cloud Infrastructure team and must be communicated to all development teams.
+
+## Additional Notes
+
+These conventions should be incorporated into Infrastructure as Code (IaC) templates and enforced through automated compliance checks.

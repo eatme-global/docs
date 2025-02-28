@@ -90,7 +90,13 @@
             "pages": [
               "internal/development/codebase",
               "internal/development/architecture",
-              "internal/development/best-practices"
+              "internal/development/best-practices",
+              "internal/development/api-endpoint-design",
+              "internal/development/aws-resource-naming-convention",
+              "internal/development/cypress-testing-guide",
+              "internal/development/git-branching-strategy",
+              "internal/development/sonarqube-setup",
+              "internal/development/swagger-setup"
             ]
           },
           {
