@@ -1,0 +1,75 @@
+---
+title: 'Codebase Overview'
+description: 'Understanding our codebase structure and conventions'
+---
+
+# Codebase Overview
+
+## Project Structure
+
+```
+src/
+├── api/          # API endpoints and controllers
+├── core/         # Core business logic
+├── db/           # Database models and migrations
+├── services/     # Internal services
+└── utils/        # Shared utilities
+```
+
+## Code Standards
+
+### Naming Conventions
+
+```typescript
+// Classes use PascalCase
+class UserService {
+  // Methods use camelCase
+  async getUserById(id: string): Promise<User> {
+    // Variables use camelCase
+    const userRecord = await this.db.find(id);
+    return userRecord;
+  }
+}
+```
+
+### Error Handling
+
+```typescript
+try {
+  await operation();
+} catch (error) {
+  logger.error('Operation failed', {
+    error,
+    context: 'UserService',
+    timestamp: new Date()
+  });
+  throw new OperationalError(error);
+}
+```
+
+## Development Workflow
+
+1. Branch naming: `feature/`, `bugfix/`, `hotfix/`
+2. Commit message format: `type(scope): message`
+3. PR review requirements
+4. CI/CD pipeline stages
+
+## Testing Strategy
+
+```typescript
+describe('UserService', () => {
+  it('should create new user', async () => {
+    const service = new UserService();
+    const user = await service.create({
+      email: 'test@example.com'
+    });
+    expect(user).toBeDefined();
+  });
+});
+```
+
+## Monitoring
+
+- Error tracking with Sentry
+- Performance monitoring with DataDog
+- Custom metrics and dashboards 

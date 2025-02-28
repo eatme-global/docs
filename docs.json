@@ -1,0 +1,157 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Docs",
+  "colors": {
+    "primary": "#ff4200",
+    "light": "#FF5214",
+    "dark": "#d62828"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Home",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": ["introduction"]
+          },
+          {
+            "group": "Getting Started",
+            "pages": [
+              "home/quick-start",
+              "home/requirements"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Point of Sale",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "pos/introduction"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Back Office",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "backoffice/introduction"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Payments",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "payments/introduction"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Docs",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": ["api-docs/introduction"]
+          },
+          {
+            "group": "Authentication",
+            "pages": ["api-docs/authentication"]
+          },
+          {
+            "group": "Users API",
+            "pages": [
+              "api-docs/users/list",
+              "api-docs/users/create",
+              "api-docs/users/get",
+              "api-docs/users/update",
+              "api-docs/users/delete"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Internal",
+        "groups": [
+          {
+            "group": "Development",
+            "pages": [
+              "internal/development/codebase",
+              "internal/development/architecture",
+              "internal/development/best-practices"
+            ]
+          },
+          {
+            "group": "QA",
+            "pages": [
+              "internal/qa/testing-strategy",
+              "internal/qa/test-environments"
+            ]
+          },
+          {
+            "group": "Product",
+            "pages": [
+              "internal/product/roadmap",
+              "internal/product/requirements"
+            ]
+          },
+          {
+            "group": "HR",
+            "pages": ["internal/hr/policies", "internal/hr/onboarding"]
+          },
+          {
+            "group": "Support",
+            "pages": [
+              "internal/support/stripe-setup",
+              "internal/support/adyen-setup",
+              "internal/support/transaction-charges"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {}
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "href": "https://dinetap.com"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:hi@mintlify.com"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://dashboard.mintlify.com"
+    }
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/mintlify",
+      "github": "https://github.com/mintlify",
+      "linkedin": "https://www.linkedin.com/company/mintsearch"
+    }
+  },
+  "auth": {
+    "required": {
+      "internal": true
+    }
+  }
+}

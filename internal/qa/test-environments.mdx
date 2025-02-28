@@ -1,0 +1,104 @@
+---
+title: 'Test Environments'
+description: 'Overview of testing environments and their configurations'
+---
+
+# Test Environments
+
+## Environment Overview
+
+| Environment | Purpose | Access | Data |
+|------------|---------|--------|------|
+| Development | Local development | Developers | Synthetic |
+| Integration | Feature testing | QA Team | Anonymized |
+| Staging | Pre-production | QA & Product | Production clone |
+| Production | Live system | Restricted | Real data |
+
+## Configuration Management
+
+```yaml
+# environment.yaml
+development:
+  api_url: http://localhost:3000
+  database:
+    host: localhost
+    port: 5432
+  features:
+    beta: true
+
+staging:
+  api_url: https://api.staging.example.com
+  database:
+    host: staging-db.example.com
+    port: 5432
+  features:
+    beta: true
+```
+
+## Data Management
+
+### Test Data Generation
+
+```typescript
+import { faker } from '@faker-js/faker';
+
+function generateTestUser() {
+  return {
+    id: faker.string.uuid(),
+    name: faker.person.fullName(),
+    email: faker.internet.email(),
+    created_at: faker.date.past()
+  };
+}
+
+// Generate bulk test data
+const testUsers = Array.from({ length: 100 }, generateTestUser);
+```
+
+## Environment Setup
+
+```bash
+# Clone repository
+git clone https://github.com/company/project.git
+
+# Install dependencies
+npm install
+
+# Set up environment
+cp .env.example .env.test
+npm run setup:test-env
+
+# Start test environment
+npm run start:test
+```
+
+## Monitoring
+
+```typescript
+// Health check endpoint
+app.get('/health', (req, res) => {
+  const status = {
+    app: 'healthy',
+    database: isDatabaseConnected(),
+    cache: isCacheAvailable(),
+    timestamp: new Date().toISOString()
+  };
+  
+  res.json(status);
+});
+```
+
+## Access Control
+
+- Development: VPN required
+- Staging: 2FA required
+- Production: IP whitelist + 2FA
+
+## Maintenance Windows
+
+| Environment | Window | Frequency |
+|------------|---------|-----------|
+| Development | Anytime | As needed |
+| Integration | Working hours | Daily |
+| Staging | Scheduled | Weekly |
+| Production | Off-hours | Monthly | 
