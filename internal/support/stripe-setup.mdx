@@ -1,0 +1,99 @@
+---
+title: 'Stripe Restaurant Setup'
+description: 'Guide for setting up Stripe payment processing for restaurants'
+---
+
+# Stripe Restaurant Setup Guide
+
+This guide covers the process of setting up Stripe payment processing for a new restaurant in DineTap.
+
+## Prerequisites
+
+- Restaurant's business information
+- Valid bank account details
+- Business registration documents
+- Owner's identification documents
+
+## Setup Process
+
+<Steps>
+  <Step title="Create Stripe Account">
+    1. Go to Stripe Dashboard
+    2. Click "Create New Connected Account"
+    3. Select "Standard" account type
+    4. Enter restaurant's business details
+  </Step>
+
+  <Step title="Configure DineTap Integration">
+    1. Navigate to restaurant settings in DineTap
+    2. Select "Payment Processing" > "Stripe"
+    3. Enter Stripe account ID
+    4. Configure webhook endpoints
+  </Step>
+
+  <Step title="Payment Method Setup">
+    Configure accepted payment methods:
+    - Credit/debit cards
+    - Digital wallets
+    - Local payment methods
+    - International payments
+  </Step>
+
+  <Step title="Terminal Configuration">
+    For in-person payments:
+    1. Register Stripe terminal
+    2. Configure receipt settings
+    3. Set up offline mode
+    4. Test terminal connection
+  </Step>
+</Steps>
+
+## Account Settings
+
+### Required Information
+- Legal business name
+- Tax ID/EIN
+- Business type
+- Business address
+- Bank account details
+- Statement descriptor
+
+### Verification Documents
+- Business license
+- Bank statements
+- Owner's ID
+- Proof of address
+
+## Testing
+
+<Steps>
+  <Step title="Test Mode Configuration">
+    1. Enable test mode
+    2. Use test card numbers
+    3. Verify webhooks
+  </Step>
+
+  <Step title="Transaction Testing">
+    Test the following scenarios:
+    - Card payments
+    - Refunds
+    - Partial payments
+    - Split payments
+  </Step>
+</Steps>
+
+## Common Issues
+
+### Troubleshooting
+- Account verification delays
+- Terminal connectivity issues
+- Payment declines
+- Webhook failures
+
+### Support Contacts
+- Stripe Support: support@stripe.com
+- DineTap Integration Team: integration@dinetap.com
+
+<Note>
+  Always use test mode first when setting up a new integration. Never test with real credit cards in production.
+</Note> 
