@@ -63,4 +63,3 @@ The documentation site can be customized through the `docs.json` file, including
 ## 📄 License
 
 This documentation is proprietary and confidential. © DineTap
-
